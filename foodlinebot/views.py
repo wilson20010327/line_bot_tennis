@@ -8,7 +8,7 @@ from django.conf import settings
  
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
-from linebot.models import MessageEvent, TextSendMessage,TemplateSendMessage,ButtonsTemplate,MessageTemplateAction
+from linebot.models import MessageEvent, TextSendMessage,TemplateSendMessage,ButtonsTemplate,MessageTemplateAction,ImageSendMessage
 from foodlinebot.models import *
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
@@ -34,22 +34,25 @@ def callback(request):
         for event in events:
             if isinstance(event, MessageEvent):  # 如果有訊息事件
                 mtext=event.message.text
+            else:
+                mtext="sticker"
             uid=event.source.user_id
             profile=line_bot_api.get_profile(uid)
             name=profile.display_name
             pic_url=profile.picture_url
             error_message=[]
             temp=True
+            
             #清空data base
             #User_Info.objects.all().delete()
             if User_Info.objects.filter(uid=uid).exists()==False:
                 User_Info.objects.create(uid=uid,name=name,pic_url=pic_url,mtext=mtext,state="Init",win=0,lose=0)
-                message.append(TextSendMessage(text='會員資料新增完畢'))
-                message.append(creat_tmp_message("Tennis game","Type :\nDetail for Introduction\nStart for start the game","detail","start","排行榜"))
+                message.append(TextSendMessage(text='遊戲註冊完畢'))
+                message.append(creat_tmp_message("Tennis game","Detail for Introduction\nStart for start the game","detail","start","排行榜"))
                 
             elif User_Info.objects.filter(uid=uid).exists()==True:
                 
-                error_message.append(TextSendMessage(text='已經有建立會員資料囉'))
+                error_message.append(TextSendMessage(text='你現在不能執行這個指令喔'))
                 
                 user_info = User_Info.objects.filter(uid=uid)
                 
@@ -59,15 +62,14 @@ def callback(request):
                     
                     #info = 'UID=%s\nNAME=%s\n大頭貼=%s'%(user.uid,user.name,user.pic_url)
                     #message.append(TextSendMessage(text=info))
-                    error_m="look carefully yours state is "+user.state
+                    error_m="Look carefully yours state is "+user.state
                     error_message.append(TextSendMessage(text=error_m))
                     if (user.state==states[0]):
                         User_Info.objects.filter(uid=uid).update(lose=0)
                         User_Info.objects.filter(uid=uid).update(win=0)
 
                         temp=machine.start(event)
-                        if(temp==False):
-                            reply_text(event.reply_token,error_message)
+                        
                     elif ("score" in event.message.text.lower()):
                         win=user.win
                         lose=user.lose
@@ -86,8 +88,7 @@ def callback(request):
                         temp=machine.check_lose(lose)
                         print(lose)
                         User_Info.objects.filter(uid=uid).update(lose=lose)
-                        if(temp==False):
-                            reply_text(event.reply_token,error_message)
+                        
                     if (machine.state==states[6]):
                         win=user.win
                         win=win+1
@@ -96,15 +97,15 @@ def callback(request):
                         if win>=win_target:
                             Score_Info.objects.create(name=name,win=win,lose=user.lose)
                         User_Info.objects.filter(uid=uid).update(win=win)
-                        if(temp==False):
-                            reply_text(event.reply_token,error_message)
+                        
                     
                     User_Info.objects.filter(uid=uid).update(state=machine.state)
             
             #line_bot_api.reply_message(event.reply_token,message)
             if temp==True:
                 reply_text(event.reply_token,message)
-            
+            if(temp==False):
+                reply_text(event.reply_token,error_message)
             message.clear()            
         return HttpResponse()
     else:
@@ -258,7 +259,7 @@ class TocMachine(GraphMachine):
     def on_enter_Init(self, event=0):
         print("Init")
         #reply_token = event.reply_token
-        message.append(creat_tmp_message("Tennis game","Type :\nDetail for Introduction\nStart for start the game","detail","start","排行榜"))
+        message.append(creat_tmp_message("Tennis game","Detail for Introduction\nStart for start the game\n","detail","start","排行榜"))
 
     def start_game(self, event):
         text = event.message.text
@@ -291,7 +292,7 @@ class TocMachine(GraphMachine):
     def on_enter_Instruction(self, event=0):
         print("I'm reading")
         #reply_token = event.reply_token
-        message.append(TextSendMessage(text="I'm reading") )
+        message.append(TextSendMessage(text="This is a Tennis game\nPlay with line bot\nYou can choose \n\tRight\n\t  or \n\tLeft \nWhen you are serving or defencing") )
         self.go_back()
 
     def User_serve_to_left(self, event):
@@ -337,7 +338,9 @@ class TocMachine(GraphMachine):
     def on_enter_W_end(self,event=0):
         print("I win the game")
         #reply_token = event.reply_token
+        pic = 'https://blog.english4u.net/images/blog/20200303031955.jpg'
         message.append(TextSendMessage(text="I win the game") )
+        message.append(ImageSendMessage(original_content_url=pic,preview_image_url=pic))
         self.go_back()
 
     def on_enter_L_serve(self,lose=0):
@@ -385,6 +388,8 @@ class TocMachine(GraphMachine):
         print("I lose the game")
         #reply_token = event.reply_token
         message.append(TextSendMessage(text="I lose the game") )
+        pic = 'https://previews.123rf.com/images/lkeskinen/lkeskinen1709/lkeskinen170908913/86154548-you-lose-rubber-stamp.jpg'
+        message.append(ImageSendMessage(original_content_url=pic,preview_image_url=pic))
         self.go_back()
 
     def on_exit_temp_left(self):

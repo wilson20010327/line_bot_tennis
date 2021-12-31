@@ -20,3 +20,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('foodlinebot/', include('foodlinebot.urls')) #包含應用程式的網址
 ]
+
+from django.conf.urls.static import static
+from django.conf import settings
+
+#加入這一行
+#urlpatterns+=static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
