@@ -79,7 +79,7 @@ def callback(request):
                         if(temp==False):
                             reply_text(event.reply_token,error_message)
                     elif (user.state==states[8] or user.state==states[9]):
-                        temp=machine.user_defence(event)
+                        temp=machine.user_defense(event)
                         if(temp==False):
                             reply_text(event.reply_token,error_message)
                     if (machine.state==states[10] ):
@@ -170,22 +170,22 @@ transitions=[
             "conditions": "User_serve_to_left",
         },
         {
-            "trigger": "line_defence_right",
+            "trigger": "line_defense_right",
             "source": "U_right",
             "dest": "L_serve",    
         },
         {
-            "trigger": "line_defence_left",
+            "trigger": "line_defense_left",
             "source": "U_right",
             "dest": "Win", 
         },
         {
-            "trigger": "line_defence_right",
+            "trigger": "line_defense_right",
             "source": "U_left",
             "dest": "Win",    
         },
         {
-            "trigger": "line_defence_left",
+            "trigger": "line_defense_left",
             "source": "U_left",
             "dest": "L_serve", 
         },
@@ -212,28 +212,28 @@ transitions=[
             "conditions": "win_smaller_15",
         },
         {
-            "trigger": "user_defence",
+            "trigger": "user_defense",
             "source": "L_right",
             "dest": "U_serve",
-            "conditions": "user_defence_right",
+            "conditions": "user_defense_right",
         },
         {
-           "trigger": "user_defence",
+           "trigger": "user_defense",
             "source": "L_right",
             "dest": "Lose",
-            "conditions": "user_defence_left",
+            "conditions": "user_defense_left",
         },
         {
-            "trigger": "user_defence",
+            "trigger": "user_defense",
             "source": "L_left",
             "dest": "U_serve",
-            "conditions": "user_defence_left",
+            "conditions": "user_defense_left",
         },
         {
-           "trigger": "user_defence",
+           "trigger": "user_defense",
             "source": "L_left",
             "dest": "Lose",
-            "conditions": "user_defence_right",
+            "conditions": "user_defense_right",
         },
          {
             "trigger": "check_lose",
@@ -292,7 +292,7 @@ class TocMachine(GraphMachine):
     def on_enter_Instruction(self, event=0):
         print("I'm reading")
         #reply_token = event.reply_token
-        message.append(TextSendMessage(text="This is a Tennis game\nPlay with line bot\nYou can choose \n\tRight\n\t  or \n\tLeft \nWhen you are serving or defencing") )
+        message.append(TextSendMessage(text="This is a Tennis game\nPlay with line bot\nYou can choose \n\tRight\n\t  or \n\tLeft \nWhen you are serving or defensing") )
         self.go_back()
 
     def User_serve_to_left(self, event):
@@ -306,9 +306,9 @@ class TocMachine(GraphMachine):
         message.append(TextSendMessage(text="I'm entering left") )
         temp=random.randint(0,1)
         if(temp==0):
-            self.line_defence_right()
+            self.line_defense_right()
         else:
-            self.line_defence_left()
+            self.line_defense_left()
 
     def User_serve_to_right(self, event):
         text = event.message.text
@@ -321,9 +321,9 @@ class TocMachine(GraphMachine):
         message.append(TextSendMessage(text="I'm entering right") )
         temp=random.randint(0,1)
         if(temp==0):
-            self.line_defence_right()
+            self.line_defense_right()
         else:
-            self.line_defence_left()
+            self.line_defense_left()
 
     def on_enter_Win(self):
         print("I get the score")
@@ -357,19 +357,19 @@ class TocMachine(GraphMachine):
         print("Bot is serving to right")
         #reply_token = event.reply_token
         message.append(TextSendMessage(text="Bot is serving to right") )
-        message.append(creat_tmp_message("Bot is serving","Please defencing\nChoose the side to Defence","Left","Right","Score"))
+        message.append(creat_tmp_message("Bot is serving","Please defensing\nChoose the side to defense","Left","Right","Score"))
 
     def on_enter_L_left(self):
         print("Bot is serving to left")
         #reply_token = event.reply_token
         message.append(TextSendMessage(text="Bot is serving to left") )
-        message.append(creat_tmp_message("Bot is serving","Please defencing\nChoose the side to Defence","Left","Right","Score"))
+        message.append(creat_tmp_message("Bot is serving","Please defensing\nChoose the side to defense","Left","Right","Score"))
 
-    def user_defence_left(self,event):
+    def user_defense_left(self,event):
         text = event.message.text
         return "left" in text.lower()
        
-    def user_defence_right(self,event):
+    def user_defense_right(self,event):
         text = event.message.text
         return "right" in text.lower()
         
