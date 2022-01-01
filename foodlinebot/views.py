@@ -14,9 +14,10 @@ from foodlinebot.models import *
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 message=[]
-win_target=3
+win_target=6
 from transitions.extensions import GraphMachine
 import random
+import time
 @csrf_exempt
 def callback(request):
     
@@ -281,7 +282,7 @@ class TocMachine(GraphMachine):
     def on_enter_U_serve(self, event=0):
         print("I'm serving")
         #reply_token = event.reply_token
-        message.append(TextSendMessage(text="I'm serving") )
+        message.append(TextSendMessage(text="you are serving") )
         #message.append(creat_tmp_message("Tennis game","Type :\nDetail for Introduction\nStart for start the game","detail","start","排行榜"))
         message.append(creat_tmp_message("Serving","Choose the side to serve","Left","Right","Score"))
 
@@ -292,7 +293,7 @@ class TocMachine(GraphMachine):
     def on_enter_Instruction(self, event=0):
         print("I'm reading")
         #reply_token = event.reply_token
-        message.append(TextSendMessage(text="This is a Tennis game\nPlay with line bot\nYou can choose \n\tRight\n\t  or \n\tLeft \nWhen you are serving or defensing") )
+        message.append(TextSendMessage(text="\tIntroduction\n\"Lonely Tennis 🎾\"\nPlay with line bot Alone\nYou can choose \n\tRight➡️\n\t  or \n\tLeft ⬅️ \nWhen you are either serving or defensing") )
         self.go_back()
 
     def User_serve_to_left(self, event):
@@ -303,8 +304,9 @@ class TocMachine(GraphMachine):
     def on_enter_U_left(self, event=0):
         print("I'm serving left")
         #reply_token = event.reply_token
-        message.append(TextSendMessage(text="I'm entering left") )
+        message.append(TextSendMessage(text="You have served to left, will you get score?") )
         temp=random.randint(0,1)
+        
         if(temp==0):
             self.line_defense_right()
         else:
@@ -318,7 +320,7 @@ class TocMachine(GraphMachine):
     def on_enter_U_right(self, event=0):
         print("I'm serving right")
         #reply_token = event.reply_token
-        message.append(TextSendMessage(text="I'm entering right") )
+        message.append(TextSendMessage(text="You have served to right, will you get score?") )
         temp=random.randint(0,1)
         if(temp==0):
             self.line_defense_right()
@@ -328,7 +330,7 @@ class TocMachine(GraphMachine):
     def on_enter_Win(self):
         print("I get the score")
         #reply_token = event.reply_token
-        message.append(TextSendMessage(text="I get the score") )
+        message.append(TextSendMessage(text="Well done, you are a smart guy, you get a point, but will you win this game?") )
 
     def win_smaller_15(self, win):
         return win<win_target
@@ -339,15 +341,16 @@ class TocMachine(GraphMachine):
         print("I win the game")
         #reply_token = event.reply_token
         pic = 'https://blog.english4u.net/images/blog/20200303031955.jpg'
-        message.append(TextSendMessage(text="I win the game") )
+        message.append(TextSendMessage(text="What a genius\nYou win the game\nCheck the score list your name will appear on it.") )
         message.append(ImageSendMessage(original_content_url=pic,preview_image_url=pic))
         self.go_back()
 
     def on_enter_L_serve(self,lose=0):
         print("Bot is serving")
-        #reply_token = event.reply_token
-        message.append(TextSendMessage(text="Bot is serving") )
+        #reply_token = event.reply_token 
+        message.append(TextSendMessage(text="HaHa GotCha\nLet me think where should I serve 🤡 ") )
         temp=random.randint(0,1)
+         
         if(temp==0):
             self.line_serve_right()
         else:
@@ -356,14 +359,14 @@ class TocMachine(GraphMachine):
     def on_enter_L_right(self):
         print("Bot is serving to right")
         #reply_token = event.reply_token
-        message.append(TextSendMessage(text="Bot is serving to right") )
-        message.append(creat_tmp_message("Bot is serving","Please defensing\nChoose the side to defense","Left","Right","Score"))
+        #message.append(TextSendMessage(text="Bot is serving to right") )
+        message.append(creat_tmp_message("Bot has served","Please defense\nChoose the side to defense","Left","Right","Score"))
 
     def on_enter_L_left(self):
         print("Bot is serving to left")
         #reply_token = event.reply_token
-        message.append(TextSendMessage(text="Bot is serving to left") )
-        message.append(creat_tmp_message("Bot is serving","Please defensing\nChoose the side to defense","Left","Right","Score"))
+        #message.append(TextSendMessage(text="Bot is serving to left") )
+        message.append(creat_tmp_message("Bot has served","Please defense\nChoose the side to defense","Left","Right","Score"))
 
     def user_defense_left(self,event):
         text = event.message.text
@@ -377,7 +380,7 @@ class TocMachine(GraphMachine):
     def on_enter_Lose(self, event=0):
         print("I lose  the score")
         #reply_token = event.reply_token
-        message.append(TextSendMessage(text="I lose  the score") )
+        message.append(TextSendMessage(text="WOW, what a silly user\nYou lose the score") )
 
     def lose_smaller_15(self, lose):
         return lose<win_target
@@ -387,7 +390,7 @@ class TocMachine(GraphMachine):
     def on_enter_L_end(self,event=0):
         print("I lose the game")
         #reply_token = event.reply_token
-        message.append(TextSendMessage(text="I lose the game") )
+        message.append(TextSendMessage(text="How foolish you are\nYou lose the game") )
         pic = 'https://previews.123rf.com/images/lkeskinen/lkeskinen1709/lkeskinen170908913/86154548-you-lose-rubber-stamp.jpg'
         message.append(ImageSendMessage(original_content_url=pic,preview_image_url=pic))
         self.go_back()
