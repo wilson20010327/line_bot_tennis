@@ -20,6 +20,7 @@ After enrol, you can play the game now.
 * detail: for more information about the game
 * start : for start playing the game
 * 排行榜: for check the score list who have won the game before
+
 ![](https://github.com/wilson20010327/line_bot_tennis/blob/main/static/scorelist.jpg)
 
 ### User_serve
