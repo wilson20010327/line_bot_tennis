@@ -12,7 +12,7 @@ Check the requirements.txt, although not all of them are require.
 ### Add friend with the bot
 Not thing will happend, unless you type any message.
 <br>After sending message, you are enrolled in the geme.  
-![](static\enrol.jpg)
+![](https://github.com/wilson20010327/line_bot_tennis/blob/main/static/enrol.jpg)
 
 ### Init
 After enrol, you can play the game now.
@@ -20,7 +20,7 @@ After enrol, you can play the game now.
 * detail: for more information about the game
 * start : for start playing the game
 * 排行榜: for check the score list who have won the game before
-![](static\scorelist.jpg)
+![](https://github.com/wilson20010327/line_bot_tennis/blob/main/static/scorelist.jpg)
 
 ### User_serve
 After start, you can decide where to serve
@@ -29,7 +29,7 @@ After start, you can decide where to serve
 * Rigth: for serving to right
 * Score: for checking recent score
 
-![](static\serve.jpg)
+![](https://github.com/wilson20010327/line_bot_tennis/blob/main/static/serve.jpg)
 
 ### Lint bot defense
 After User_serve, Lint bot can decide where to defense.
@@ -46,15 +46,15 @@ After line serve, you can decide where to defense
     * If you guess in the right place, then line bot have to defense where it is going to serve.
     * if not, line bot get the point and line bot can keep serving.
 
-![](static\defence_correct.jpg)![](static\defence.jpg)!
+![](https://github.com/wilson20010327/line_bot_tennis/blob/main/static/defence_correct.jpg)![](https://github.com/wilson20010327/line_bot_tennis/blob/main/static/defence.jpg)!
 ### WIN or LOSE
 Check whether score is bigger than the score max
 <br>With different condition respone different image 
 
-![](static\win.jpg)![](static\lose.jpg)
+![](https://github.com/wilson20010327/line_bot_tennis/blob/main/static/win.jpg)![](https://github.com/wilson20010327/line_bot_tennis/blob/main/static/lose.jpg)
 
 ## Using in project
-![](static\python_line_bot_deploy_to_heroku.PNG)
+![](https://github.com/wilson20010327/line_bot_tennis/blob/main/static/python_line_bot_deploy_to_heroku.PNG)
 
 [參考server](https://www.learncodewithmike.com/2020/07/python-line-bot-deploy-to-heroku.html)<br>
 [參考database](https://ithelp.ithome.com.tw/articles/10239404)<br>
